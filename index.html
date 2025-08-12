@@ -13,6 +13,7 @@
 
   gtag('config', 'G-Y41Z7TFF2D');
 </script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   :root{ --bg:#0b1220; --panel:#111a2b; --muted:#9fb0c7; --text:#e8eef6; --brand:#5bd1ff; --accent:#85f089; --chip:#1a2740; --chip2:#0f1b30; --warn:#ffd166; }
   *{box-sizing:border-box}
@@ -100,13 +101,19 @@
         <input id="maxBack" type="range" min="0" max="120" value="120" style="flex:1"/>
         <div id="maxBackVal" class="pill">≤ 120 นาที</div>
       </div>
-      <div class="chips col-12" id="quick">
-        <span class="chip" data-sys="ทางเลือก">#ทางเลือก</span>
-        <span class="chip" data-sys="อังกฤษ">#อังกฤษ</span>
-        <span class="chip" data-sys="สิงคโปร์">#สิงคโปร์</span>
-        <span class="chip" data-sys="อเมริกัน">#อเมริกัน</span>
-        <span class="chip" data-sys="สองภาษา">#สองภาษา</span>
-      </div>
+  <div class="chips col-12" id="quick">
+    <span class="chip" data-sys="ทางเลือก">#ทางเลือก</span>
+    <span class="chip" data-sys="อังกฤษ">#อังกฤษ</span>
+    <span class="chip" data-sys="สิงคโปร์">#สิงคโปร์</span>
+    <span class="chip" data-sys="อเมริกัน">#อเมริกัน</span>
+    <span class="chip" data-sys="สองภาษา">#สองภาษา</span>
+  </div>
+</section>
+
+    <section id="charts" class="panel" style="margin-top:14px;padding:16px">
+      <canvas id="chartDistance"></canvas>
+      <canvas id="chartGo" style="margin-top:20px"></canvas>
+      <canvas id="chartBack" style="margin-top:20px"></canvas>
     </section>
 
     <section id="results" class="list" aria-live="polite"></section>
@@ -164,6 +171,40 @@ function fmtMin(m){ return m + ' นาที'; }
 function fmtKm(km){ return km.toFixed(1) + ' กม.'; }
 function stripParens(s){ let out='', depth=0; for(const ch of s){ if(ch==='('){ depth++; continue; } if(ch===')'){ if(depth>0) depth--; continue; } if(depth===0) out+=ch; } return out; }
 function initials(name){ const cleaned = stripParens(name).trim(); const words = cleaned.split(' ').filter(Boolean); let res=''; for(let i=0;i<words.length && i<3;i++){ res += (words[i][0]||'').toUpperCase(); } return res || 'SCH'; }
+
+let chartDist, chartGo, chartBack;
+function updateCharts(rows){
+  const labels = rows.map(s=>s.name);
+  const dist = rows.map(s=>s.distance_km);
+  const go = rows.map(s=>s.time_peak8_min);
+  const back = rows.map(s=>s.time_peak15_min);
+  document.getElementById('charts').style.display = rows.length? 'block':'none';
+  const common = {indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}};
+  if(chartDist){ chartDist.data.labels=labels; chartDist.data.datasets[0].data=dist; chartDist.update(); }
+  else{
+    chartDist = new Chart(document.getElementById('chartDistance'),{
+      type:'bar',
+      data:{labels,datasets:[{label:'ระยะทาง (กม.)',data:dist,backgroundColor:'rgba(91,209,255,0.7)'}]},
+      options:common
+    });
+  }
+  if(chartGo){ chartGo.data.labels=labels; chartGo.data.datasets[0].data=go; chartGo.update(); }
+  else{
+    chartGo = new Chart(document.getElementById('chartGo'),{
+      type:'bar',
+      data:{labels,datasets:[{label:'ไป 08:00 (นาที)',data:go,backgroundColor:'rgba(133,240,137,0.7)'}]},
+      options:common
+    });
+  }
+  if(chartBack){ chartBack.data.labels=labels; chartBack.data.datasets[0].data=back; chartBack.update(); }
+  else{
+    chartBack = new Chart(document.getElementById('chartBack'),{
+      type:'bar',
+      data:{labels,datasets:[{label:'กลับ 15:00 (นาที)',data:back,backgroundColor:'rgba(255,209,102,0.7)'}]},
+      options:common
+    });
+  }
+}
 
 function card(s){
   const logos = getLogos();
@@ -236,6 +277,7 @@ function render(){
   });
 
   document.querySelector('#results').innerHTML = out.map(card).join('');
+  updateCharts(out);
 
   // แผนที่
   document.querySelectorAll('[data-act="map"]').forEach(btn=>{ btn.onclick = ()=> window.open(btn.dataset.href,'_blank'); });
