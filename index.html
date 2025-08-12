@@ -179,13 +179,15 @@ function updateCharts(rows){
   const go = rows.map(s=>s.time_peak8_min);
   const back = rows.map(s=>s.time_peak15_min);
   document.getElementById('charts').style.display = rows.length? 'block':'none';
-  const common = {indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}};
+  const common = {indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}};
+
+
   if(chartDist){ chartDist.data.labels=labels; chartDist.data.datasets[0].data=dist; chartDist.update(); }
   else{
     chartDist = new Chart(document.getElementById('chartDistance'),{
       type:'bar',
       data:{labels,datasets:[{label:'ระยะทาง (กม.)',data:dist,backgroundColor:'rgba(91,209,255,0.7)'}]},
-      options:{...common,plugins:{...common.plugins,title:{display:true,text:'ระยะทาง (กม.)'}}}
+      options:common
     });
   }
   if(chartGo){ chartGo.data.labels=labels; chartGo.data.datasets[0].data=go; chartGo.update(); }
@@ -193,7 +195,7 @@ function updateCharts(rows){
     chartGo = new Chart(document.getElementById('chartGo'),{
       type:'bar',
       data:{labels,datasets:[{label:'ไป 08:00 (นาที)',data:go,backgroundColor:'rgba(133,240,137,0.7)'}]},
-      options:{...common,plugins:{...common.plugins,title:{display:true,text:'ไป 08:00 (นาที)'}}}
+      options:common
     });
   }
   if(chartBack){ chartBack.data.labels=labels; chartBack.data.datasets[0].data=back; chartBack.update(); }
@@ -201,7 +203,7 @@ function updateCharts(rows){
     chartBack = new Chart(document.getElementById('chartBack'),{
       type:'bar',
       data:{labels,datasets:[{label:'กลับ 15:00 (นาที)',data:back,backgroundColor:'rgba(255,209,102,0.7)'}]},
-      options:{...common,plugins:{...common.plugins,title:{display:true,text:'กลับ 15:00 (นาที)'}}}
+      options:common
     });
   }
 }
