@@ -8,6 +8,12 @@ This project aims to help parents quickly filter and compare schools based on di
 
 ---
 
+## 🌐 Live Demo
+The project is hosted on **GitHub Pages** and can be accessed here:  
+[https://tsripata.github.io/thor-schools/](https://tsripata.github.io/thor-schools/)
+
+---
+
 ## 🛠 Tech Stack
 - **HTML, CSS, JavaScript**
 - Data stored in static **JSON** format
