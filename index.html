@@ -170,7 +170,6 @@ function card(s){
     + '    <div class="logo" id="logo-'+id+'">'+logoEl+'</div>\n'
     + '    <div>'+s.name+'</div>\n'
     + '    <div class="logoBar">\n'
-    + '      <button class="pill ghost" data-act="upload" data-id="'+id+'">เพิ่มโลโก้</button>\n'
     + '      <button class="pill" data-act="map" data-href="'+mapUrl+'">แผนที่</button>\n'
     + '    </div>\n'
     + '  </div>\n'
@@ -229,21 +228,7 @@ function render(){
 
   document.querySelector('#results').innerHTML = out.map(card).join('');
 
-  // โลโก้และแผนที่
-  document.querySelectorAll('[data-act="upload"]').forEach(btn=>{
-    btn.onclick = ()=>{
-      const name = decodeURIComponent(atob(btn.dataset.id));
-      const input = document.createElement('input');
-      input.type = 'file'; input.accept = 'image/*';
-      input.onchange = ()=>{
-        const file = input.files && input.files[0]; if(!file) return;
-        const reader = new FileReader();
-        reader.onload = ()=>{ const logos = getLogos(); logos[name] = reader.result; setLogos(logos); render(); };
-        reader.readAsDataURL(file);
-      };
-      input.click();
-    };
-  });
+  // แผนที่
   document.querySelectorAll('[data-act="map"]').forEach(btn=>{ btn.onclick = ()=> window.open(btn.dataset.href,'_blank'); });
 }
 
