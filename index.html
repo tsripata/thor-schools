@@ -53,6 +53,9 @@
   .logo .initial{font-weight:800;color:#17223a}
   .logoBar{margin-left:auto;display:flex;gap:8px}
   .tests{margin-left:8px}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.1);text-align:left}
+  th:nth-child(2),th:nth-child(3),td:nth-child(2),td:nth-child(3){text-align:right}
 </style>
 </head>
 <body>
@@ -112,6 +115,22 @@
 
     <section id="charts" class="panel" style="margin-top:14px;padding:16px">
       <canvas id="chartAll" height="220"></canvas>
+    </section>
+
+    <section id="summary" class="panel" style="margin-top:14px;padding:16px;overflow-x:auto;display:none">
+      <table>
+        <thead>
+          <tr>
+            <th>โรงเรียน</th>
+            <th>ไป 08:00 (นาที)</th>
+            <th>กลับ 15:00 (นาที)</th>
+            <th>ค่าเทอม</th>
+            <th>ข้อดี</th>
+            <th>ข้อเสีย</th>
+          </tr>
+        </thead>
+        <tbody id="summaryBody"></tbody>
+      </table>
     </section>
 
     <section id="results" class="list" aria-live="polite"></section>
@@ -275,6 +294,18 @@ function render(){
 
   document.querySelector('#results').innerHTML = out.map(card).join('');
   updateCharts(out);
+
+  document.getElementById('summary').style.display = out.length ? 'block' : 'none';
+  document.querySelector('#summaryBody').innerHTML = out.map(s=>`
+        <tr>
+          <td>${s.name}</td>
+          <td style="text-align:right">${s.time_peak8_min}</td>
+          <td style="text-align:right">${s.time_peak15_min}</td>
+          <td>${s.tuition}</td>
+          <td>${s.pros.join('<br>')}</td>
+          <td>${s.cons.join('<br>')}</td>
+        </tr>
+      `).join('');
 
   // แผนที่
   document.querySelectorAll('[data-act="map"]').forEach(btn=>{ btn.onclick = ()=> window.open(btn.dataset.href,'_blank'); });
