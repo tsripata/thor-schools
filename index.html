@@ -33,8 +33,8 @@
   button{cursor:pointer}
   .chips{display:flex;flex-wrap:wrap;gap:6px}
   .chip{padding:6px 10px;border-radius:999px;background:var(--chip);border:1px solid rgba(255,255,255,0.08);font-size:12px;color:#cfe3ff}
-  .list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:14px}
-  .card{position:relative;padding:14px;display:flex;flex-direction:column;gap:10px}
+  .list{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:14px;font-size:14px}
+  .card{position:relative;padding:10px;display:flex;flex-direction:column;gap:8px}
   .title{font-weight:700;display:flex;align-items:center;gap:12px}
   .meta{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:13px}
   .badges{display:flex;gap:6px;flex-wrap:wrap}
@@ -111,9 +111,7 @@
 </section>
 
     <section id="charts" class="panel" style="margin-top:14px;padding:16px">
-      <canvas id="chartDistance" height="220"></canvas>
-      <canvas id="chartGo" height="220" style="margin-top:20px"></canvas>
-      <canvas id="chartBack" height="220" style="margin-top:20px"></canvas>
+      <canvas id="chartAll" height="220"></canvas>
     </section>
 
     <section id="results" class="list" aria-live="polite"></section>
@@ -172,38 +170,31 @@ function fmtKm(km){ return km.toFixed(1) + ' กม.'; }
 function stripParens(s){ let out='', depth=0; for(const ch of s){ if(ch==='('){ depth++; continue; } if(ch===')'){ if(depth>0) depth--; continue; } if(depth===0) out+=ch; } return out; }
 function initials(name){ const cleaned = stripParens(name).trim(); const words = cleaned.split(' ').filter(Boolean); let res=''; for(let i=0;i<words.length && i<3;i++){ res += (words[i][0]||'').toUpperCase(); } return res || 'SCH'; }
 
-let chartDist, chartGo, chartBack;
+let chartAll;
 function updateCharts(rows){
   const labels = rows.map(s=>s.name);
   const dist = rows.map(s=>s.distance_km);
   const go = rows.map(s=>s.time_peak8_min);
   const back = rows.map(s=>s.time_peak15_min);
   document.getElementById('charts').style.display = rows.length? 'block':'none';
-  const common = {indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}};
+  const data = {
+    labels,
+    datasets:[
+      {label:'ระยะทาง (กม.)',data:dist,backgroundColor:'rgba(91,209,255,0.7)'},
+      {label:'ไป 08:00 (นาที)',data:go,backgroundColor:'rgba(133,240,137,0.7)'},
+      {label:'กลับ 15:00 (นาที)',data:back,backgroundColor:'rgba(255,209,102,0.7)'}
+    ]
+  };
+  const options = {indexAxis:'y',responsive:true,plugins:{legend:{display:true}},scales:{x:{beginAtZero:true}}};
 
-
-  if(chartDist){ chartDist.data.labels=labels; chartDist.data.datasets[0].data=dist; chartDist.update(); }
-  else{
-    chartDist = new Chart(document.getElementById('chartDistance'),{
+  if(chartAll){
+    chartAll.data = data;
+    chartAll.update();
+  } else {
+    chartAll = new Chart(document.getElementById('chartAll'),{
       type:'bar',
-      data:{labels,datasets:[{label:'ระยะทาง (กม.)',data:dist,backgroundColor:'rgba(91,209,255,0.7)'}]},
-      options:common
-    });
-  }
-  if(chartGo){ chartGo.data.labels=labels; chartGo.data.datasets[0].data=go; chartGo.update(); }
-  else{
-    chartGo = new Chart(document.getElementById('chartGo'),{
-      type:'bar',
-      data:{labels,datasets:[{label:'ไป 08:00 (นาที)',data:go,backgroundColor:'rgba(133,240,137,0.7)'}]},
-      options:common
-    });
-  }
-  if(chartBack){ chartBack.data.labels=labels; chartBack.data.datasets[0].data=back; chartBack.update(); }
-  else{
-    chartBack = new Chart(document.getElementById('chartBack'),{
-      type:'bar',
-      data:{labels,datasets:[{label:'กลับ 15:00 (นาที)',data:back,backgroundColor:'rgba(255,209,102,0.7)'}]},
-      options:common
+      data,
+      options
     });
   }
 }
