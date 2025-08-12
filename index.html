@@ -39,7 +39,7 @@
   .meta{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:13px}
   .badges{display:flex;gap:6px;flex-wrap:wrap}
   .badge{font-size:11px;padding:4px 8px;border-radius:999px;background:var(--chip2);border:1px solid rgba(255,255,255,0.06)}
-  .proscons{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .proscons{display:grid;grid-template-columns:1fr;gap:20px}
   .proscons ul{margin:0 0 0 18px}
   .proscons li{margin-bottom:6px}
   .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -264,6 +264,8 @@ function render(){
     if(sortBy==='peak15') return a.time_peak15_min - b.time_peak15_min;
     return 0;
   });
+
+  out = out.slice(0,1);
 
   document.querySelector('#results').innerHTML = out.map(card).join('');
   updateCharts(out);
