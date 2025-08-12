@@ -117,27 +117,27 @@
       <canvas id="chartAll" height="220"></canvas>
     </section>
 
-    <section id="summary" class="panel" style="margin-top:14px;padding:16px;overflow-x:auto;display:none">
-      <table>
-        <thead>
-          <tr>
-            <th>โรงเรียน</th>
-            <th>ไป 08:00 (นาที)</th>
-            <th>กลับ 15:00 (นาที)</th>
-            <th>ค่าเทอม</th>
-            <th>ข้อดี</th>
-            <th>ข้อเสีย</th>
-          </tr>
-        </thead>
-        <tbody id="summaryBody"></tbody>
-      </table>
-    </section>
+      <section id="results" class="list" aria-live="polite"></section>
 
-    <section id="results" class="list" aria-live="polite"></section>
+      <footer>
+        <p>หมายเหตุ: เวลาเดินทางเป็นค่าประมาณ—“เวลา 15:00” คือเวลากลับจากโรงเรียนมาบ้าน • สามารถอัปโหลดโลโก้ทับได้และจะถูกเก็บไว้เฉพาะในเบราว์เซอร์ของคุณ</p>
+      </footer>
 
-    <footer>
-      <p>หมายเหตุ: เวลาเดินทางเป็นค่าประมาณ—“เวลา 15:00” คือเวลากลับจากโรงเรียนมาบ้าน • สามารถอัปโหลดโลโก้ทับได้และจะถูกเก็บไว้เฉพาะในเบราว์เซอร์ของคุณ</p>
-    </footer>
+      <section id="summary" class="panel" style="margin-top:14px;padding:16px;overflow-x:auto;display:none">
+        <table>
+          <thead>
+            <tr>
+              <th>โรงเรียน</th>
+              <th>ไป 08:00 (นาที)</th>
+              <th>กลับ 15:00 (นาที)</th>
+              <th>ค่าเทอม</th>
+              <th>ข้อดี</th>
+              <th>ข้อเสีย</th>
+            </tr>
+          </thead>
+          <tbody id="summaryBody"></tbody>
+        </table>
+      </section>
   </div>
 
 <script>
